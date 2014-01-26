@@ -1,0 +1,93 @@
+<html>
+<head>
+  <title>Example of Aha! Javascript API</title>
+
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css"></link>
+  
+  <script type="text/javascript" charset="utf-8" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  
+  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+  <script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+  
+  <script type="text/javascript" charset="utf-8" src="aha-api-javascript.js"></script>
+  
+  
+  <style>
+    .feature {
+      border-top: 1px solid #0073cf;
+      margin-top: 10px;
+      margin-bottom: 30px;
+    }
+    .feature .reference-num {
+      float: left;
+      padding-right: 10px;
+    }
+    .feature .name {
+      float: left;
+      font-weight: bold;
+    }
+    .feature > .description {
+      clear: left;
+      margin-left: 20px;
+    }
+    .requirement {
+      position: relative;
+      margin-top: 15px;
+      margin-left: 20px;
+      
+    }
+    .requirement .reference-num {
+      position: absolute;
+      font-weight: bold;
+    }
+    .requirement .description {
+      margin-left: 120px;
+    }
+    
+  </style>
+</head>
+
+<body class="container">
+  
+  <form id="controls">
+    <input type="text" placeholder="Aha! subdomain" id="subdomain"></input>
+    <input type="submit" class="btn" value="Load features"></input>
+  </form>
+  
+  <script id="feature-template" type="text/x-jquery-tmpl">
+    <div class="feature">
+      <div class="reference-num">${reference_num}</div>
+      <div class="name">${name}</div> 
+      <div class="description">{{html description.body}} </div>
+    
+      {{each requirements}}
+        <div class="requirement">
+          <div class="reference-num">${reference_num}</div>
+          <div class="description">{{html description.body}}</div>
+        </div>
+      {{/each}}
+    
+    </div>
+  </script>
+  
+  <div id="features"></div>
+  
+  <script>
+    $("#controls").submit(function() {
+      new AhaApi({
+        accountDomain: $("#subdomain").val(),
+        clientId: "",
+        redirectUri: ""
+      }).authenticate(function(api, success, message) {
+        // Hide the controls.
+        $("#controls").remove();
+        
+        // Fetch up to 200 features in one big fetch.
+        api.get("/products//features", {per_page: 200, fields: 'reference_num,name,description,requirements'}, function(response) {
+          $("#feature-template").tmpl(response.features).appendTo("#features");
+        });
+      });
+      return false;
+    });
+  </script>
+</body>
