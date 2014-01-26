@@ -75,6 +75,8 @@
   
   <script>
     $("#controls").submit(function() {
+      var productKey = $("#product-key").val();
+      
       new AhaApi({
         accountDomain: $("#subdomain").val(),
         clientId: "3fcbc72a603ce9567f148b56102d0e9cab768d8c306bf8073c6b0f27e1e24746",
@@ -84,7 +86,7 @@
         $("#controls").remove();
         
         // Fetch up to 200 features in one big fetch.
-        api.get("/products/" + $("#product-key").val() + "/features", {per_page: 200, fields: 'reference_num,name,description,requirements'}, function(response) {
+        api.get("/products/" + productKey + "/features", {per_page: 200, fields: 'reference_num,name,description,requirements'}, function(response) {
           $("#feature-template").tmpl(response.features).appendTo("#features");
         });
       });
