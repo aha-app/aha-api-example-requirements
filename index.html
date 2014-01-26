@@ -51,6 +51,7 @@
   
   <form id="controls">
     <input type="text" placeholder="Aha! subdomain" id="subdomain"></input>
+    <input type="text" placeholder="Product key" id="product-key"></input>
     <input type="submit" class="btn" value="Load features"></input>
   </form>
   
@@ -76,14 +77,14 @@
     $("#controls").submit(function() {
       new AhaApi({
         accountDomain: $("#subdomain").val(),
-        clientId: "",
-        redirectUri: ""
+        clientId: "3fcbc72a603ce9567f148b56102d0e9cab768d8c306bf8073c6b0f27e1e24746",
+        redirectUri: "http://aha-app.github.io/aha-api-example-requirements/"
       }).authenticate(function(api, success, message) {
         // Hide the controls.
         $("#controls").remove();
         
         // Fetch up to 200 features in one big fetch.
-        api.get("/products//features", {per_page: 200, fields: 'reference_num,name,description,requirements'}, function(response) {
+        api.get("/products/" + $("#product-key").val() + "/features", {per_page: 200, fields: 'reference_num,name,description,requirements'}, function(response) {
           $("#feature-template").tmpl(response.features).appendTo("#features");
         });
       });
